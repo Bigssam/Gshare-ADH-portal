@@ -6,150 +6,97 @@
   <title>GShare & ADH Operational Dashboard</title>
   <style>
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      color: #e2e8f0;
       margin: 0;
-      padding: 24px;
-      background-color: #0e121a;
-      background-image: 
-        radial-gradient(at 0% 0%, hsla(216, 56%, 16%, 1) 0px, transparent 50%),
-        radial-gradient(at 50% 100%, hsla(43, 86%, 53%, 0.12) 0px, transparent 50%),
-        radial-gradient(at 100% 0%, hsla(210, 40%, 10%, 1) 0px, transparent 50%);
-      background-attachment: fixed;
-      background-size: cover;
+      padding: 20px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #0d1b2a;
+      color: #ffffff;
     }
-
     header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding-bottom: 20px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
       margin-bottom: 30px;
     }
-
-    h2 {
-      margin: 0;
-      font-size: 22px;
-      letter-spacing: 0.5px;
-    }
-
     .badge {
-      background: rgba(250, 204, 21, 0.15);
-      color: #facc15;
-      padding: 6px 12px;
+      background: #3d3b14;
+      color: #e5c07b;
+      padding: 6px 14px;
       border-radius: 20px;
-      font-size: 13px;
-      font-weight: 600;
-      border: 1px solid rgba(250, 204, 21, 0.3);
+      font-size: 14px;
+      font-weight: bold;
     }
-
     .table-container {
-      background: rgba(255, 255, 255, 0.03);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: #1b263b;
       border-radius: 12px;
-      overflow-x: auto;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+      padding: 20px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
     }
-
     table {
       width: 100%;
       border-collapse: collapse;
       text-align: left;
     }
-
+    th, td {
+      padding: 16px;
+      border-bottom: 1px solid #2b3a4e;
+    }
     th {
-      background: rgba(255, 255, 255, 0.05);
-      padding: 16px 20px;
+      color: #8d99ae;
       font-size: 13px;
-      font-weight: 600;
       text-transform: uppercase;
-      letter-spacing: 0.8px;
-      color: #94a3b8;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      letter-spacing: 1px;
     }
-
-    td {
-      padding: 18px 20px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-      font-size: 15px;
-    }
-
-    tr:last-child td {
-      border-bottom: none;
-    }
-
-    tr:hover {
-      background: rgba(255, 255, 255, 0.02);
-    }
-
-    .metric-value {
-      font-weight: bold;
-      font-size: 18px;
-      color: #38bdf8;
-    }
-
-    .metric-value.highlight {
-      color: #facc15;
-    }
-
-    .status-dot {
+    .dot {
       display: inline-block;
       width: 8px;
       height: 8px;
       border-radius: 50%;
       margin-right: 8px;
     }
+    .pending { background: #f39c12; }
+    .processing { background: #3498db; }
+    .completed { background: #2ecc71; }
+    .failed { background: #e74c3c; }
+    .total { background: #f1c40f; }
+    .val-blue { color: #3498db; font-weight: bold; font-size: 18px; }
+    .val-gold { color: #f1c40f; font-weight: bold; font-size: 18px; }
+  </style>
+  <script>
+    async function updateMetrics() {
+      try {
+        const response = await fetch('/api/metrics');
+        const data = await response.json();
 
-    .dot-pending { background-color: #f59e0b; }
-    .dot-processing { background-color: #3b82f6; }
-    .dot-processed { background-color: #10b981; }
-    .dot-failed { background-color: #ef4444; }
-    .dot-delivered { background-color: #facc15; }
- <script>
-  async function updateMetrics() {
-    try {
-      const response = await fetch('/api/metrics');
-      const data = await response.json();
-
-      // Updates each metric row with data from your PostgreSQL database
-      if (document.getElementById('pending-count')) {
-        document.getElementById('pending-count').textContent = data.pending ?? 0;
+        if (document.getElementById('pending-count')) {
+          document.getElementById('pending-count').textContent = data.pending ?? 0;
+        }
+        if (document.getElementById('processing-count')) {
+          document.getElementById('processing-count').textContent = data.processing ?? 0;
+        }
+        if (document.getElementById('completed-count')) {
+          document.getElementById('completed-count').textContent = data.processed ?? 0;
+        }
+        if (document.getElementById('failed-count')) {
+          document.getElementById('failed-count').textContent = data.failed ?? 0;
+        }
+        
+        const totalElement = document.getElementById('total-count') || document.getElementById('total-delivered-count');
+        if (totalElement) {
+          totalElement.textContent = data.totalBeneficiaries ?? 0;
+        }
+      } catch (err) {
+        console.error('Failed to load dashboard metrics:', err);
       }
-      if (document.getElementById('processing-count')) {
-        document.getElementById('processing-count').textContent = data.processing ?? 0;
-      }
-      if (document.getElementById('completed-count')) {
-        document.getElementById('completed-count').textContent = data.processed ?? 0;
-      }
-      if (document.getElementById('failed-count')) {
-        document.getElementById('failed-count').textContent = data.failed ?? 
-      const totalElement = document.getElementById('total-count') || document.getElementById('total-delivered-count');
-      if (totalElement) {
-        totalElement.textContent = data.totalBeneficiaries ?? 0;
-         // Automatically find any element that represents the total count
-      const totalElement = document.getElementById('total-count') || 
-                           document.getElementById('total-delivered-count') || 
-                           document.querySelector('[id*="total"]') ||
-                           document.querySelector('[id*="delivered"]');
-      
-      if (totalElement) {
-        totalElement.textContent = data.totalBeneficiaries ?? 0;
-      }
-    } catch (err) {
-      console.error('Failed to load dashboard metrics:', err);
     }
-  }
 
-  document.addEventListener('DOMContentLoaded', () => {
-    updateMetrics();
-    setInterval(updateMetrics, 10000);
-  });
-</script>
+    document.addEventListener('DOMContentLoaded', () => {
+      updateMetrics();
+      setInterval(updateMetrics, 10000);
+    });
+  </script>
 </head>
 <body>
-    
   <header>
     <h2>GShare & ADH Operational Dashboard</h2>
     <span class="badge">Platform Admin</span>
@@ -167,56 +114,37 @@
         </thead>
         <tbody>
           <tr>
-            <td><strong>Pending Orders</strong></td>
-            <td><span class="status-dot dot-pending"></span>Pending</td>
-            <td class="metric-value" id="pending-count">Loading...</td>
+            <td>Pending Orders</td>
+            <td><span class="dot pending"></span>Pending</td>
+            <td id="pending-count" class="val-blue">0</td>
           </tr>
           <tr>
-            <td><strong>Processing Orders</strong></td>
-            <td><span class="status-dot dot-processing"></span>In Progress</td>
-            <td class="metric-value" id="processing-count">Loading...</td>
+            <td>Processing Orders</td>
+            <td><span class="dot processing"></span>In Progress</td>
+            <td id="processing-count" class="val-blue">0</td>
           </tr>
           <tr>
-            <td><strong>Processed Orders</strong></td>
-            <td><span class="status-dot dot-processed"></span>Completed</td>
-            <td class="metric-value highlight" id="processed-count">Loading...</td>
+            <td>Processed Orders</td>
+            <td><span class="dot completed"></span>Completed</td>
+            <td id="completed-count" class="val-gold">0</td>
           </tr>
           <tr>
-            <td><strong>Failed Orders</strong></td>
-            <td><span class="status-dot dot-failed"></span>Failed</td>
-            <td class="metric-value" id="failed-count">Loading...</td>
+            <td>Failed Orders</td>
+            <td><span class="dot failed"></span>Failed</td>
+            <td id="failed-count" class="val-blue">0</td>
           </tr>
           <tr>
-            <td><strong>Delivered Data (Beneficiaries)</strong></td>
-            <td><span class="status-dot dot-delivered"></span>Total Delivered</td>
-            <td class="metric-value highlight" id="total-beneficiaries">Loading...</td>
+            <td>Delivered Data (Beneficiaries)</td>
+            <td><span class="dot total"></span>Total Delivered</td>
+            <td id="total-count" class="val-gold">0</td>
           </tr>
         </tbody>
       </table>
     </div>
   </main>
-
-  <script>
-    async function fetchAdminMetrics() {
-      try {
-        const response = await fetch('https://gshare-adh-portal.onrender.com/api/metrics');
-        const data = await response.json();
-
-        if (document.getElementById('pending-count')) document.getElementById('pending-count').innerText = data.pending;
-        if (document.getElementById('processing-count')) document.getElementById('processing-count').innerText = data.processing;
-        if (document.getElementById('processed-count')) document.getElementById('processed-count').innerText = data.processed;
-        if (document.getElementById('failed-count')) document.getElementById('failed-count').innerText = data.failed;
-        if (document.getElementById('total-beneficiaries')) document.getElementById('total-beneficiaries').innerText = data.totalBeneficiaries || data.total;
-      } catch (error) {
-        console.error("Error loading metrics:", error);
-      }
-    }
-
-    fetchAdminMetrics();
-    setInterval(fetchAdminMetrics, 10000);
-  </script>
 </body>
 </html>
+
 
 
 
