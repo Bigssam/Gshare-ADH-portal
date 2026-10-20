@@ -1,121 +1,144 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GShare & ADH Synced Portal</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #121824;
-            color: #ffffff;
-            margin: 0;
-            padding: 20px;
-        }
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #2a3447;
-            padding-bottom: 15px;
-            margin-bottom: 20px;
-        }
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin-bottom: 30px;
-        }
-        .card {
-            background-color: #1a2233;
-            border: 1px solid #2a3447;
-            border-radius: 8px;
-            padding: 20px;
-            text-align: center;
-        }
-        .card h3 {
-            margin: 0;
-            font-size: 14px;
-            color: #94a3b8;
-        }
-        .card p {
-            font-size: 24px;
-            font-weight: bold;
-            margin: 10px 0 0 0;
-            color: #38bdf8;
-        }
-        .card.highlight p {
-            color: #facc15;
-        }
-        button {
-            background-color: #facc15;
-            color: #121824;
-            border: none;
-            padding: 10px 20px;
-            font-weight: bold;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #eab308;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GShare & ADH Synced Dashboard</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      color: #ffffff;
+      margin: 0;
+      padding: 20px;
+      background-color: #0e121a;
+      background-image: 
+        radial-gradient(at 0% 0%, hsla(216, 56%, 16%, 1) 0px, transparent 50%),
+        radial-gradient(at 50% 100%, hsla(43, 86%, 53%, 0.15) 0px, transparent 50%),
+        radial-gradient(at 100% 0%, hsla(210, 40%, 10%, 1) 0px, transparent 50%);
+      background-attachment: fixed;
+      background-size: cover;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      margin-bottom: 30px;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: 24px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+    }
+
+    .grid > div {
+      background: rgba(255, 255, 255, 0.04);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+
+    .grid > div:hover {
+      transform: translateY(-3px);
+      border-color: rgba(250, 204, 21, 0.3);
+    }
+
+    .card h3 {
+      margin: 0;
+      font-size: 14px;
+      color: #94a3b8;
+    }
+
+    .card p {
+      font-size: 28px;
+      font-weight: bold;
+      margin: 10px 0 0 0;
+      color: #38bdf8;
+    }
+
+    .card.highlight p {
+      color: #facc15;
+    }
+
+    button {
+      background-color: #facc15;
+      color: #121824;
+      border: none;
+      padding: 10px 20px;
+      font-weight: bold;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+
+    button:hover {
+      background-color: #eab308;
+    }
+  </style>
 </head>
 <body>
 
-    <header>
-        <h2>GShare & ADH Synced Dashboard</h2>
-        <span>Account: Platform Admin</span>
-    </header>
+  <header>
+    <h2>GShare & ADH Synced Dashboard</h2>
+    <span>Account: Platform Admin</span>
+  </header>
 
-    <main>
-        <h3>Live Operational Metrics</h3>
-        <div class="grid">
-            <div class="card">
-                <h3>Delivered Data</h3>
-                <p id="delivered-tb">Loading...</p>
-            </div>
-            <div class="card highlight">
-                <h3>MTN Processed</h3>
-                <p id="mtn-processed">Loading...</p>
-            </div>
-            <div class="card">
-                <h3>Files Tracked</h3>
-                <p id="total-files">Loading...</p>
-            </div>
-            <div class="card">
-                <h3>Synced Batches</h3>
-                <p id="synced-count">Loading...</p>
-            </div>
-        </div>
+  <main>
+    <h3 style="margin-bottom: 20px; color: #cbd5e1;">Live Operational Metrics</h3>
+    <div class="grid">
+      <div class="card">
+        <h3>Pending Orders</h3>
+        <p id="pending-count">Loading...</p>
+      </div>
+      <div class="card">
+        <h3>Processing Orders</h3>
+        <p id="processing-count">Loading...</p>
+      </div>
+      <div class="card highlight">
+        <h3>Processed Orders</h3>
+        <p id="processed-count">Loading...</p>
+      </div>
+      <div class="card">
+        <h3>Failed Orders</h3>
+        <p id="failed-count">Loading...</p>
+      </div>
+      <div class="card highlight">
+        <h3>Delivered Data (Beneficiaries)</h3>
+        <p id="total-beneficiaries">Loading...</p>
+      </div>
+    </div>
+  </main>
 
-        <button onclick="fetchAdminMetrics()">Refresh Live Status</button>
-    </main>
+  <script>
+    async function fetchAdminMetrics() {
+      try {
+        const response = await fetch('https://gshare-adh-portal.onrender.com/api/metrics');
+        const data = await response.json();
 
-    <script>
-        async function fetchAdminMetrics() {
-            try {
-                const response = await fetch('http://localhost:4000/api/admin/metrics', {
-                    headers: {
-                        'x-user-role': 'ADMIN'
-                    }
-                });
-                
-                  const data = await response.json();
+        if (document.getElementById('pending-count')) document.getElementById('pending-count').innerText = data.pending;
+        if (document.getElementById('processing-count')) document.getElementById('processing-count').innerText = data.processing;
+        if (document.getElementById('processed-count')) document.getElementById('processed-count').innerText = data.processed;
+        if (document.getElementById('failed-count')) document.getElementById('failed-count').innerText = data.failed;
+        if (document.getElementById('total-beneficiaries')) document.getElementById('total-beneficiaries').innerText = data.totalBeneficiaries || data.total;
+      } catch (error) {
+        console.error("Error loading metrics:", error);
+      }
+    }
 
-    if (document.getElementById('pending-count')) document.getElementById('pending-count').innerText = data.pending;
-    if (document.getElementById('processing-count')) document.getElementById('processing-count').innerText = data.processing;
-    if (document.getElementById('processed-count')) document.getElementById('processed-count').innerText = data.processed;
-    if (document.getElementById('failed-count')) document.getElementById('failed-count').innerText = data.failed;
-    if (document.getElementById('total-beneficiaries')) document.getElementById('total-beneficiaries').innerText = data.totalBeneficiaries || data.total;
-  } catch (error) {
-    console.error("Connection error:", error);
-  }
-}
-
-fetchAdminMetrics();
-</script>
-
+    fetchAdminMetrics();
+    setInterval(fetchAdminMetrics, 10000);
+  </script>
 </body>
 </html>
 
