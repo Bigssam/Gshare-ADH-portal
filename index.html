@@ -101,24 +101,26 @@
                     }
                 });
                 
-                const result = await response.json();
-                
-                if (result.success) {
-                    const data = result.data;
-                    document.getElementById('delivered-tb').innerText = data.deliveredTB;
-                    document.getElementById('mtn-processed').innerText = data.mtnProcessed.toLocaleString();
-                    document.getElementById('total-files').innerText = data.totalFiles;
-                    document.getElementById('synced-count').innerText = data.processedQueueCount;
-                } else {
-                    alert("Access Denied: You do not have admin permissions.");
-                }
-            } catch (error) {
-                console.error("Connection error:", error);
-            }
-        }
+                    const result = await response.json();
 
-        fetchAdminMetrics();
-    </script>
+    if (result.success) {
+      const data = result.data;
+      if (document.getElementById('pending-count')) document.getElementById('pending-count').innerText = data.pending;
+      if (document.getElementById('processing-count')) document.getElementById('processing-count').innerText = data.processing;
+      if (document.getElementById('processed-count')) document.getElementById('processed-count').innerText = data.processed;
+      if (document.getElementById('failed-count')) document.getElementById('failed-count').innerText = data.failed;
+      if (document.getElementById('total-beneficiaries')) document.getElementById('total-beneficiaries').innerText = data.totalBeneficiaries || data.total;
+    } else {
+      alert("Access Denied: You do not have permission.");
+    }
+  } catch (error) {
+    console.error("Connection error:", error);
+  }
+}
+
+fetchAdminMetrics();
+</script>
 
 </body>
 </html>
+
