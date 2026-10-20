@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GShare & ADH Synced Portal</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #121824;
+            color: #ffffff;
+            margin: 0;
+            padding: 20px;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #2a3447;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        .card {
+            background-color: #1a2233;
+            border: 1px solid #2a3447;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+        }
+        .card h3 {
+            margin: 0;
+            font-size: 14px;
+            color: #94a3b8;
+        }
+        .card p {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 10px 0 0 0;
+            color: #38bdf8;
+        }
+        .card.highlight p {
+            color: #facc15;
+        }
+        button {
+            background-color: #facc15;
+            color: #121824;
+            border: none;
+            padding: 10px 20px;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #eab308;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h2>GShare & ADH Synced Dashboard</h2>
+        <span>Account: Platform Admin</span>
+    </header>
+
+    <main>
+        <h3>Live Operational Metrics</h3>
+        <div class="grid">
+            <div class="card">
+                <h3>Delivered Data</h3>
+                <p id="delivered-tb">Loading...</p>
+            </div>
+            <div class="card highlight">
+                <h3>MTN Processed</h3>
+                <p id="mtn-processed">Loading...</p>
+            </div>
+            <div class="card">
+                <h3>Files Tracked</h3>
+                <p id="total-files">Loading...</p>
+            </div>
+            <div class="card">
+                <h3>Synced Batches</h3>
+                <p id="synced-count">Loading...</p>
+            </div>
+        </div>
+
+        <button onclick="fetchAdminMetrics()">Refresh Live Status</button>
+    </main>
+
+    <script>
+        async function fetchAdminMetrics() {
+            try {
+                const response = await fetch('http://localhost:4000/api/admin/metrics', {
+                    headers: {
+                        'x-user-role': 'ADMIN'
+                    }
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    const data = result.data;
+                    document.getElementById('delivered-tb').innerText = data.deliveredTB;
+                    document.getElementById('mtn-processed').innerText = data.mtnProcessed.toLocaleString();
+                    document.getElementById('total-files').innerText = data.totalFiles;
+                    document.getElementById('synced-count').innerText = data.processedQueueCount;
+                } else {
+                    alert("Access Denied: You do not have admin permissions.");
+                }
+            } catch (error) {
+                console.error("Connection error:", error);
+            }
+        }
+
+        fetchAdminMetrics();
+    </script>
+
+</body>
+</html>
