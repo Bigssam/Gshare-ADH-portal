@@ -1,19 +1,19 @@
-  <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GShare & ADH Synced Dashboard</title>
+  <title>GShare & ADH Operational Dashboard</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      color: #ffffff;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #e2e8f0;
       margin: 0;
-      padding: 20px;
+      padding: 24px;
       background-color: #0e121a;
       background-image: 
         radial-gradient(at 0% 0%, hsla(216, 56%, 16%, 1) 0px, transparent 50%),
-        radial-gradient(at 50% 100%, hsla(43, 86%, 53%, 0.15) 0px, transparent 50%),
+        radial-gradient(at 50% 100%, hsla(43, 86%, 53%, 0.12) 0px, transparent 50%),
         radial-gradient(at 100% 0%, hsla(210, 40%, 10%, 1) 0px, transparent 50%);
       background-attachment: fixed;
       background-size: cover;
@@ -30,78 +30,130 @@
 
     h2 {
       margin: 0;
-      font-size: 24px;
+      font-size: 22px;
+      letter-spacing: 0.5px;
     }
 
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 20px;
+    .badge {
+      background: rgba(250, 204, 21, 0.15);
+      color: #facc15;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      border: 1px solid rgba(250, 204, 21, 0.3);
     }
 
-    .grid > div {
-      background: rgba(255, 255, 255, 0.04);
-      backdrop-filter: blur(10px);
+    .table-container {
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(12px);
       border: 1px solid rgba(255, 255, 255, 0.08);
       border-radius: 12px;
-      padding: 20px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-      transition: transform 0.2s ease, border-color 0.2s ease;
+      overflow-x: auto;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
     }
 
-    .grid > div:hover {
-      transform: translateY(-3px);
-      border-color: rgba(250, 204, 21, 0.3);
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
     }
 
-    .card h3 {
-      margin: 0;
-      font-size: 14px;
+    th {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 16px 20px;
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
       color: #94a3b8;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
 
-    .card p {
-      font-size: 28px;
+    td {
+      padding: 18px 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      font-size: 15px;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr:hover {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .metric-value {
       font-weight: bold;
-      margin: 10px 0 0 0;
+      font-size: 18px;
       color: #38bdf8;
     }
 
-    .card.highlight p {
+    .metric-value.highlight {
       color: #facc15;
     }
+
+    .status-dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      margin-right: 8px;
+    }
+
+    .dot-pending { background-color: #f59e0b; }
+    .dot-processing { background-color: #3b82f6; }
+    .dot-processed { background-color: #10b981; }
+    .dot-failed { background-color: #ef4444; }
+    .dot-delivered { background-color: #facc15; }
   </style>
 </head>
 <body>
 
   <header>
-    <h2>GShare & ADH Synced Dashboard</h2>
-    <span>Account: Platform Admin</span>
+    <h2>GShare & ADH Operational Dashboard</h2>
+    <span class="badge">Platform Admin</span>
   </header>
 
   <main>
-    <h3 style="margin-bottom: 20px; color: #cbd5e1;">Live Operational Metrics</h3>
-    <div class="grid">
-      <div class="card">
-        <h3>Pending Orders</h3>
-        <p id="pending-count">Loading...</p>
-      </div>
-      <div class="card">
-        <h3>Processing Orders</h3>
-        <p id="processing-count">Loading...</p>
-      </div>
-      <div class="card highlight">
-        <h3>Processed Orders</h3>
-        <p id="processed-count">Loading...</p>
-      </div>
-      <div class="card">
-        <h3>Failed Orders</h3>
-        <p id="failed-count">Loading...</p>
-      </div>
-      <div class="card highlight">
-        <h3>Delivered Data (Beneficiaries)</h3>
-        <p id="total-beneficiaries">Loading...</p>
-      </div>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Metric Name</th>
+            <th>Status Indicator</th>
+            <th>Live Count</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Pending Orders</strong></td>
+            <td><span class="status-dot dot-pending"></span>Pending</td>
+            <td class="metric-value" id="pending-count">Loading...</td>
+          </tr>
+          <tr>
+            <td><strong>Processing Orders</strong></td>
+            <td><span class="status-dot dot-processing"></span>In Progress</td>
+            <td class="metric-value" id="processing-count">Loading...</td>
+          </tr>
+          <tr>
+            <td><strong>Processed Orders</strong></td>
+            <td><span class="status-dot dot-processed"></span>Completed</td>
+            <td class="metric-value highlight" id="processed-count">Loading...</td>
+          </tr>
+          <tr>
+            <td><strong>Failed Orders</strong></td>
+            <td><span class="status-dot dot-failed"></span>Failed</td>
+            <td class="metric-value" id="failed-count">Loading...</td>
+          </tr>
+          <tr>
+            <td><strong>Delivered Data (Beneficiaries)</strong></td>
+            <td><span class="status-dot dot-delivered"></span>Total Delivered</td>
+            <td class="metric-value highlight" id="total-beneficiaries">Loading...</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </main>
 
@@ -126,6 +178,7 @@
   </script>
 </body>
 </html>
+
 
 
 
