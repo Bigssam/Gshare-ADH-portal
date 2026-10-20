@@ -101,18 +101,13 @@
                     }
                 });
                 
-                    const result = await response.json();
+                  const data = await response.json();
 
-    if (result.success) {
-      const data = result.data;
-      if (document.getElementById('pending-count')) document.getElementById('pending-count').innerText = data.pending;
-      if (document.getElementById('processing-count')) document.getElementById('processing-count').innerText = data.processing;
-      if (document.getElementById('processed-count')) document.getElementById('processed-count').innerText = data.processed;
-      if (document.getElementById('failed-count')) document.getElementById('failed-count').innerText = data.failed;
-      if (document.getElementById('total-beneficiaries')) document.getElementById('total-beneficiaries').innerText = data.totalBeneficiaries || data.total;
-    } else {
-      alert("Access Denied: You do not have permission.");
-    }
+    if (document.getElementById('pending-count')) document.getElementById('pending-count').innerText = data.pending;
+    if (document.getElementById('processing-count')) document.getElementById('processing-count').innerText = data.processing;
+    if (document.getElementById('processed-count')) document.getElementById('processed-count').innerText = data.processed;
+    if (document.getElementById('failed-count')) document.getElementById('failed-count').innerText = data.failed;
+    if (document.getElementById('total-beneficiaries')) document.getElementById('total-beneficiaries').innerText = data.totalBeneficiaries || data.total;
   } catch (error) {
     console.error("Connection error:", error);
   }
@@ -123,4 +118,5 @@ fetchAdminMetrics();
 
 </body>
 </html>
+
 
