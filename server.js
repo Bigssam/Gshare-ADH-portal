@@ -18,12 +18,12 @@ app.use(express.static(__dirname));
 app.get('/api/metrics', async (req, res) => {
   try {
     const query = `
-      SELECT status, COUNT(*) as count 
+      SELECT LOWER(status) AS status, COUNT(*) AS count 
       FROM orders 
-      GROUP BY status;
+      GROUP BY LOWER(status);
     `;
     const result = await pool.query(query);
-    
+
     const metrics = {
       pending: 0,
       processing: 0,
@@ -35,10 +35,11 @@ app.get('/api/metrics', async (req, res) => {
 
     let total = 0;
     result.rows.forEach(row => {
-      const status = row.status ? row.status.toLowerCase() : '';
-      const count = parseInt(row.count, 10);
-      if (metrics.hasOwnProperty(status)) {
-        metrics[status] = count;
+      const statusKey = row.status;
+      const count = parseInt(row.count, 10) || 0;
+
+      if (metrics.hasOwnProperty(statusKey)) {
+        metrics[statusKey] = count;
       }
       total += count;
     });
@@ -47,11 +48,20 @@ app.get('/api/metrics', async (req, res) => {
     res.json(metrics);
   } catch (err) {
     console.error('Database query error:', err.message);
-    res.status(500).json({ error: 'Failed to fetch live database metrics' });
+    res.status(500).json({ 
+      pending: 0, 
+      processing: 0, 
+      processed: 0, 
+      failed: 0, 
+      cancelled: 0, 
+      totalBeneficiaries: 0,
+      error: 'Failed to fetch live database metrics' 
+    });
   }
 });
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+
 
