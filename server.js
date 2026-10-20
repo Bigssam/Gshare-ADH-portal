@@ -79,3 +79,13 @@ app.get('/api/metrics', (req, res) => {
 });
 
 app.listen(PORT, () => console.log(`Backend server running on port ${PORT}`));
+const express = require('express');
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+// This is the line that makes your index.html show up!
+app.use(express.static(__dirname));
+
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
