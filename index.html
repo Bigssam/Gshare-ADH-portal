@@ -124,11 +124,16 @@
         document.getElementById('completed-count').textContent = data.processed ?? 0;
       }
       if (document.getElementById('failed-count')) {
-        document.getElementById('failed-count').textContent = data.failed ?? 0;
-      }
-      
-      // Fixes the Total Delivered row
+        document.getElementById('failed-count').textContent = data.failed ?? 
       const totalElement = document.getElementById('total-count') || document.getElementById('total-delivered-count');
+      if (totalElement) {
+        totalElement.textContent = data.totalBeneficiaries ?? 0;
+         // Automatically find any element that represents the total count
+      const totalElement = document.getElementById('total-count') || 
+                           document.getElementById('total-delivered-count') || 
+                           document.querySelector('[id*="total"]') ||
+                           document.querySelector('[id*="delivered"]');
+      
       if (totalElement) {
         totalElement.textContent = data.totalBeneficiaries ?? 0;
       }
@@ -137,16 +142,14 @@
     }
   }
 
-  // Load metrics when page loads and refresh every 10 seconds
   document.addEventListener('DOMContentLoaded', () => {
     updateMetrics();
     setInterval(updateMetrics, 10000);
   });
 </script>
- </style>
 </head>
 <body>
-
+    
   <header>
     <h2>GShare & ADH Operational Dashboard</h2>
     <span class="badge">Platform Admin</span>
