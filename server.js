@@ -59,9 +59,17 @@ app.get('/api/metrics', async (req, res) => {
     });
   }
 });
+// Temporary seed route to test live dashboard counts
+app.get('/api/seed', async (req, res) => {
+  try {
+    await pool.query("INSERT INTO orders (status) VALUES ('pending'), ('processing'), ('processed'), ('failed');");
+    res.send('Success! Test orders added. Go back and refresh your dashboard.');
+  } catch (err) {
+    res.status(500).send('Error adding test data: ' + err.message);
+  }
+});
 
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+
 
 
