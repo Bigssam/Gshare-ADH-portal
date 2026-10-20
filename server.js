@@ -68,3 +68,34 @@ async function processTask(item) {
 setInterval(runHighSpeedProcessor, 200);
 
 app.listen(PORT, () => console.log(`Backend server running on port ${PORT}`));
+// Example unified metrics route
+app.get('/api/metrics', async (req, res) => {
+  try {
+    const { startDate, endDate, network } = req.query;
+
+    // Build your database query filters dynamically
+    let filter = {};
+    if (startDate && endDate) {
+      filter.date = { $gte: new Date(startDate),$lte: new Date(endDate) };
+    }
+    if (network) {
+      filter.network = network; // e.g., 'MTN', 'Telecel', 'AirtelTigo'
+    }
+
+    // Fetch counts using the same filter logic for both ADH and GShare data
+    const pendingCount = await Order.countDocuments({ ...filter, status: 'pending' });
+    const processingCount = await Order.countDocuments({ ...filter, status: 'processing' });
+    const processedCount = await Order.countDocuments({ ...filter, status: 'processed' });
+    const failedCount = await Order.countDocuments({ ...filter, status: 'failed' });
+
+    res.json({
+      pending: pendingCount,
+      processing: processingCount,
+      processed: processedCount,
+      failed: failedCount,
+      totalBeneficiaries: processedCount // Aligning ranges where applicable
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
