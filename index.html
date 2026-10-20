@@ -107,7 +107,43 @@
     .dot-processed { background-color: #10b981; }
     .dot-failed { background-color: #ef4444; }
     .dot-delivered { background-color: #facc15; }
-  </style>
+ <script>
+  async function updateMetrics() {
+    try {
+      const response = await fetch('/api/metrics');
+      const data = await response.json();
+
+      // Updates each metric row with data from your PostgreSQL database
+      if (document.getElementById('pending-count')) {
+        document.getElementById('pending-count').textContent = data.pending ?? 0;
+      }
+      if (document.getElementById('processing-count')) {
+        document.getElementById('processing-count').textContent = data.processing ?? 0;
+      }
+      if (document.getElementById('completed-count')) {
+        document.getElementById('completed-count').textContent = data.processed ?? 0;
+      }
+      if (document.getElementById('failed-count')) {
+        document.getElementById('failed-count').textContent = data.failed ?? 0;
+      }
+      
+      // Fixes the Total Delivered row
+      const totalElement = document.getElementById('total-count') || document.getElementById('total-delivered-count');
+      if (totalElement) {
+        totalElement.textContent = data.totalBeneficiaries ?? 0;
+      }
+    } catch (err) {
+      console.error('Failed to load dashboard metrics:', err);
+    }
+  }
+
+  // Load metrics when page loads and refresh every 10 seconds
+  document.addEventListener('DOMContentLoaded', () => {
+    updateMetrics();
+    setInterval(updateMetrics, 10000);
+  });
+</script>
+ </style>
 </head>
 <body>
 
